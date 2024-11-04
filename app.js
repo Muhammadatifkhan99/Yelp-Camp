@@ -23,6 +23,8 @@ app.set("view engine", "ejs");
 //set the view directory.....>require path module for that
 app.set('views',path.join(__dirname, 'views'));
 
+// need to parse the request body before we can use
+app.use(express.urlencoded({extended:true}));
 
 
 app.get("/", (req,res) => {
@@ -35,11 +37,23 @@ app.get("/campgrounds", async (req,res) => {
     const campgrounds = await Campground.find({});
     res.render("campgrounds/index", {campgrounds});
 })
+//creating a new camp
+//order does matters here...it can not find the campground with the id of new 
+app.get("/campgrounds/new", (req,res) => {
+    res.render("campgrounds/new");
+})
 
 app.get("/campgrounds/:id", async (req,res) => {
     const { id } = req.params;
     const campground = await Campground.findById(id);
     res.render("campgrounds/show", { campground });
+})
+
+//post requests
+app.post("/campgrounds", async (req,res) => {
+    const campground = new Campground(req.body.campground);
+    await campground.save();
+    res.redirect(`campgrounds/${campground._id}`)
 })
 
 // app.get("/makecampground", async (req,res) => {
