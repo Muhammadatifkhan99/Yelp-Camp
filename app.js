@@ -1,6 +1,8 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const path = require("path");
+//using the method-override package for using other requests types
+const methodoverride = require("method-override"); 
 //requiring our own Campground model from the files
 const Campground = require("./models/campground");
 
@@ -25,6 +27,8 @@ app.set('views',path.join(__dirname, 'views'));
 
 // need to parse the request body before we can use
 app.use(express.urlencoded({extended:true}));
+//use the method override
+app.use(methodoverride("_method"));
 
 
 app.get("/", (req,res) => {
@@ -49,11 +53,30 @@ app.get("/campgrounds/:id", async (req,res) => {
     res.render("campgrounds/show", { campground });
 })
 
+app.get("/campgrounds/:id/edit", async (req,res) => {
+    const { id } = req.params;
+    const editcampground = await Campground.findById(id);
+    res.render("campgrounds/edit", { editcampground });
+})
+
 //post requests
 app.post("/campgrounds", async (req,res) => {
     const campground = new Campground(req.body.campground);
     await campground.save();
     res.redirect(`campgrounds/${campground._id}`)
+})
+
+//put requests
+app.put("/campgrounds/:id", async (req,res) => {
+    const { id } = req.params;
+    const campground = await Campground.findByIdAndUpdate(id,{...req.body.editcampground });
+    res.redirect(`/campgrounds/${campground._id}`);
+})
+
+app.delete("/campgrounds/:id", async (req,res) => {
+    const { id } = req.params;
+    await Campground.findByIdAndDelete(id);
+    res.redirect("/campgrounds");
 })
 
 // app.get("/makecampground", async (req,res) => {
