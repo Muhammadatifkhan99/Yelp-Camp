@@ -1,10 +1,13 @@
 const express = require("express");
+//using mongoose to interact with MONGODB
 const mongoose = require("mongoose");
 const path = require("path");
 //using the method-override package for using other requests types
 const methodoverride = require("method-override"); 
 //requiring our own Campground model from the files
 const Campground = require("./models/campground");
+//using ejs-mate to add some more functionality to ejs
+const ejsMate = require("ejs-mate");
 
 
 //connection to the database
@@ -19,6 +22,10 @@ db.once("open", () => {
 
 
 const app = express();
+
+//setting engine to ejs-mate 
+app.engine("ejs",ejsMate);
+
 //use the app.set to set the view engine to ejs &&&& set the directory to views using the path modules
 //setting the view engine
 app.set("view engine", "ejs");
