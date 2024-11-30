@@ -8,8 +8,8 @@ const methodoverride = require("method-override");
 const Campground = require("./models/campground");
 //using ejs-mate to add some more functionality to ejs
 const ejsMate = require("ejs-mate");
-
-
+//requiring the CatchAsync Wrapper class/function
+const CatchAsync = require("./utils/CatchAsync");
 //connection to the database
 mongoose.connect("mongodb://localhost:27017/yelp-camp");
 
@@ -44,51 +44,47 @@ app.get("/", (req,res) => {
 
 //route to display all the campgrounds...
 //get route for getting data...
-app.get("/campgrounds", async (req,res) => {
+app.get("/campgrounds",CatchAsync( async (req,res) => {
     const campgrounds = await Campground.find({});
     res.render("campgrounds/index", {campgrounds});
-})
+}))
 //creating a new camp
 //order does matters here...it can not find the campground with the id of new 
 app.get("/campgrounds/new", (req,res) => {
     res.render("campgrounds/new");
 })
 
-app.get("/campgrounds/:id", async (req,res) => {
+app.get("/campgrounds/:id",CatchAsync( async (req,res) => {
     const { id } = req.params;
     const campground = await Campground.findById(id);
     res.render("campgrounds/show", { campground });
-})
+}))
 
-app.get("/campgrounds/:id/edit", async (req,res) => {
+app.get("/campgrounds/:id/edit",CatchAsync( async (req,res) => {
     const { id } = req.params;
     const editcampground = await Campground.findById(id);
     res.render("campgrounds/edit", { editcampground });
-})
+}))
 
 //post requests
-app.post("/campgrounds", async (req,res,next) => {
-    try{
+app.post("/campgrounds",CatchAsync (async (req,res,next) => {
     const campground = new Campground(req.body.campground);
     await campground.save();
     res.redirect(`campgrounds/${campground._id}`);
-    } catch(e){
-        next(e);
-    }
-})
+}));
 
 //put requests
-app.put("/campgrounds/:id", async (req,res) => {
+app.put("/campgrounds/:id",CatchAsync( async (req,res) => {
     const { id } = req.params;
     const campground = await Campground.findByIdAndUpdate(id,{...req.body.editcampground });
     res.redirect(`/campgrounds/${campground._id}`);
-})
+}))
 
-app.delete("/campgrounds/:id", async (req,res) => {
+app.delete("/campgrounds/:id",CatchAsync( async (req,res) => {
     const { id } = req.params;
     await Campground.findByIdAndDelete(id);
     res.redirect("/campgrounds");
-})
+}))
 
 // app.get("/makecampground", async (req,res) => {
 //     const camp = new Campground({title: "My Backyard", description: "Cheap camping and heavy security is provided"});
