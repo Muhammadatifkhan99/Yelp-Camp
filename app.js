@@ -13,7 +13,9 @@ const CatchAsync = require("./utils/CatchAsync");
 //requiring the expresserror class
 const ExpressError = require("./utils/ExpressError");
 //joi tool used for schema validation on the server side
-const Joi = require("joi");
+// const Joi = require("joi");
+//Joi validations Schemas
+const { campgroundSchema } = require("./Schema.js");
 
 
 //connection to the database
@@ -43,6 +45,15 @@ app.use(express.urlencoded({extended:true}));
 //use the method override
 app.use(methodoverride("_method"));
 
+const validateCampground = (req,res,next) => {
+    const { error } = campgroundSchema.validate(req.body);
+    if(error) {
+        const msg = error.details.map(el => el.message).join(",");
+        throw new ExpressError(msg,400);
+    } else {
+        next();
+    }
+}
 
 app.get("/", (req,res) => {
     res.render("home");
@@ -50,13 +61,13 @@ app.get("/", (req,res) => {
 
 //route to display all the campgrounds...
 //get route for getting data...
-app.get("/campgrounds",CatchAsync( async (req,res) => {
+app.get("/campgrounds",validateCampground, CatchAsync( async (req,res) => {
     const campgrounds = await Campground.find({});
     res.render("campgrounds/index", {campgrounds});
 }))
 //creating a new camp
 //order does matters here...it can not find the campground with the id of new 
-app.get("/campgrounds/new", (req,res) => {
+app.get("/campgrounds/new",  (req,res) => {
     res.render("campgrounds/new");
 })
 
@@ -66,37 +77,22 @@ app.get("/campgrounds/:id",CatchAsync( async (req,res) => {
     res.render("campgrounds/show", { campground });
 }))
 
-app.get("/campgrounds/:id/edit",CatchAsync( async (req,res) => {
+app.get("/campgrounds/:id/edit",validateCampground, CatchAsync( async (req,res) => {
     const { id } = req.params;
     const editcampground = await Campground.findById(id);
     res.render("campgrounds/edit", { editcampground });
 }))
 
 //post requests
-app.post("/campgrounds",CatchAsync (async (req,res,next) => {
+app.post("/campgrounds",validateCampground,CatchAsync (async (req,res,next) => {
     // if(!req.body.campground) throw new ExpressError("Invalid Campground Data",400);
-    const campgroundSchema = Joi.object({
-        campground: Joi.object({
-            title: Joi.string().required(),
-            price: Joi.number().required().min(0),
-            image: Joi.string().required(),
-            location: Joi.string().required(),
-            description: Joi.string().required()
-        }).required()
-    })
-    const { error } = campgroundSchema.validate(req.body);
-    if(error) {
-        const msg = error.details.map(el => el.message).join(",");
-        throw new ExpressError(msg,400);
-    }
-    console.log(msg);
     const campground = new Campground(req.body.campground);
     await campground.save();
     res.redirect(`campgrounds/${campground._id}`);
 }));
 
 //put requests
-app.put("/campgrounds/:id",CatchAsync( async (req,res) => {
+app.put("/campgrounds/:id",validateCampground,CatchAsync( async (req,res) => {
     const { id } = req.params;
     const campground = await Campground.findByIdAndUpdate(id,{...req.body.editcampground });
     res.redirect(`/campgrounds/${campground._id}`);
@@ -118,14 +114,12 @@ app.all("/*",(req,res,next) => {
     next(new ExpressError("Page not found",404));
 })
 
-
 app.use((err,req,res,next) =>{
     const { statusCode = 500} = err;
     if(!err.message) err.message = "Oh No, Something Went Wrong!";
     res.status(statusCode).render("errors", {err});
     // res.send("oh boy, something went wrong");
 })
-
 
 app.listen(3000, () =>{
     console.log("SERVING ON PORT 3000");
