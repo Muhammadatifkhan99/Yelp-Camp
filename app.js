@@ -1,11 +1,6 @@
 
 
 
-// SERVING ON PORT 3000
-
-
-
-
 
 const express = require("express");
 //using mongoose to interact with MONGODB
@@ -24,7 +19,7 @@ const ExpressError = require("./utils/ExpressError");
 //joi tool used for schema validation on the server side
 // const Joi = require("joi");
 //Joi validations Schemas( Joi is always used in here so no need to require it separatly)
-const { campgroundSchema } = require("./Schema.js");
+const { campgroundSchema } = require("./schema.js");
 
 
 //connection to the database
@@ -51,6 +46,7 @@ app.set('views',path.join(__dirname, 'views'));
 
 // need to parse the request body before we can use
 app.use(express.urlencoded({extended:true}));
+app.use(express.json());
 //use the method override
 app.use(methodoverride("_method"));
 
@@ -70,7 +66,7 @@ app.get("/", (req,res) => {
 
 //route to display all the campgrounds...
 //get route for getting data...
-app.get("/campgrounds",validateCampground, CatchAsync( async (req,res) => {
+app.get("/campgrounds", CatchAsync( async (req,res) => {
     const campgrounds = await Campground.find({});
     res.render("campgrounds/index", {campgrounds});
 }))
@@ -86,14 +82,14 @@ app.get("/campgrounds/:id",CatchAsync( async (req,res) => {
     res.render("campgrounds/show", { campground });
 }))
 
-app.get("/campgrounds/:id/edit",validateCampground, CatchAsync( async (req,res) => {
+app.get("/campgrounds/:id/edit", CatchAsync( async (req,res) => {
     const { id } = req.params;
     const editcampground = await Campground.findById(id);
     res.render("campgrounds/edit", { editcampground });
 }))
 
 //post requests
-app.post("/campgrounds",validateCampground,CatchAsync (async (req,res,next) => {
+app.post("/campgrounds",validateCampground,CatchAsync (async (req,res) => {
     // if(!req.body.campground) throw new ExpressError("Invalid Campground Data",400);
     const campground = new Campground(req.body.campground);
     await campground.save();

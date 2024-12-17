@@ -7,21 +7,21 @@
         <form action="/campgrounds/<%= editcampground._id %>?_method=PUT" method="POST" novalidate class="validated-form">
             <div class="mb-3">
                 <label class="form-label" for="title">Title</label>
-                <input class="form-control" type="text" id="title" name = "editcampground[title]" value="<%= editcampground.title %>" required>
+                <input class="form-control" type="text" id="title" name = "campground[title]" value="<%= editcampground.title %>" required>
                 <div class="valid-feedback">
                     Looks good!
                 </div>
             </div>
             <div class="mb-3">
                 <label class="form-label" for="location">Location</label>
-                <input class="form-control" type="text" id="location" name = "editcampground[location]" value="<%= editcampground.location %>"required>
+                <input class="form-control" type="text" id="location" name = "campground[location]" value="<%= editcampground.location %>"required>
                 <div class="valid-feedback">
                     Looks good!
                 </div>
             </div>
             <div class="mb-3">
                 <label class="form-label" for="image">Image URL</label>
-                <input class="form-control" type="text" id="image" name = "editcampground[image]" value="<%= editcampground.image %>"required>
+                <input class="form-control" type="text" id="image" name = "campground[image]" value="<%= editcampground.image %>"required>
                 <div class="valid-feedback">
                     Looks good!
                 </div>
@@ -31,7 +31,7 @@
             <div class="input-group mb-3">
                 <span class="input-group-text" id="price-label">$</span>
                 <input type="text" class="form-control" id="price" placeholder="0.00" aria-label="price" aria-describedby="price-label"  
-                name = "editcampground[price]" value="<%= editcampground.price %>"required>
+                name = "campground[price]" value="<%= editcampground.price %>"required>
                 <div class="valid-feedback">
                     Looks good!
                 </div>
@@ -39,13 +39,13 @@
             </div>
             <div class="mb-3">
                 <label class="form-label" for="description">Description</label>
-                <textarea class="form-control" type="text" id="description" name = "editcampground[description]" required><%= editcampground.description%></textarea>
+                <textarea class="form-control" type="text" id="description" name = "campground[description]" required><%= editcampground.description%></textarea>
                 <div class="valid-feedback">
                     Looks good!
                 </div>
             </div>
             <div class="mb-3">
-                <button class="btn btn-info">update Campground</button>
+                <button type="submit" class="btn btn-info">Update Campground</button>
             </div>
         </form>
         <a href="/campgrounds/<%= editcampground._id %>">Back to Campgrounds</a>
