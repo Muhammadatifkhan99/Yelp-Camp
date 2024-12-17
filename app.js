@@ -1,3 +1,12 @@
+
+
+
+// SERVING ON PORT 3000
+
+
+
+
+
 const express = require("express");
 //using mongoose to interact with MONGODB
 const mongoose = require("mongoose");
@@ -14,7 +23,7 @@ const CatchAsync = require("./utils/CatchAsync");
 const ExpressError = require("./utils/ExpressError");
 //joi tool used for schema validation on the server side
 // const Joi = require("joi");
-//Joi validations Schemas
+//Joi validations Schemas( Joi is always used in here so no need to require it separatly)
 const { campgroundSchema } = require("./Schema.js");
 
 
