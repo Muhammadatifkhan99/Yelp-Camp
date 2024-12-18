@@ -109,6 +109,10 @@ app.delete("/campgrounds/:id",CatchAsync( async (req,res) => {
     res.redirect("/campgrounds");
 }))
 
+app.post("/campgrounds/:id/reviews",CatchAsync (async(req,res) => {
+    res.send("YOU MADE IT");
+}))
+
 // app.get("/makecampground", async (req,res) => {
 //     const camp = new Campground({title: "My Backyard", description: "Cheap camping and heavy security is provided"});
 //     await camp.save();
