@@ -1,40 +1,102 @@
-<% layout('./layouts/boilerplate') -%>
-
+<%- layout('./layouts/boilerplate') -%>
 
 <div class="row">
-    <div class="col-6 offset-3 mb-3">
-        <div class="card">
-            <img src="https://images.unsplash.com/photo-1731569348001-e49c36947289?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" class="card-img-top" alt="">
-            <div class="card-body">
-              <h5 class="card-title"><%= campground.title %></h5>
-              <p class="card-text"><%= campground.description %></p>
-            </div>
-            <ul class="list-group list-group-flush">
-              <li class="list-group-item text-muted"><%= campground.location %></li>
-              <li class="list-group-item">$<%= campground.price %>/night</li>
-            </ul>
-            <div class="card-body">
-            <a class="card-link btn btn-info" href="/campgrounds/<%= campground._id %>/edit">Edit the Camp</a>
-            <form class="d-inline" action="/campgrounds/<%= campground._id %>?_method=DELETE" method="post">
-                <button class="btn btn-danger" >Delete</button>
-            </div>
-          </div>
-            <div class="card-footer text-body-secondary">
-                2 days ago
-                <a class="btn btn-success" href="/campgrounds">All Campgrounds</a>
-            </div>
-            <h2>Leave a Review</h2>
-            <form action="/campgrounds/<%= campground._id %>/reviews" method="POST" class="mb-3">
-              <div class="mb-3">
-                <label class="form-label" for="rating">Rating</label>
-                <input class="form-range" type="range" min="1" max="5" name="review[rating] id="rating">
-              </div>
-              <div class="mb-3">
-                <label class="form-label" for="body">Review</label>
-                <textarea class="form-control" name="review[body]" id="body" cols="30" rows="3"></textarea>
-              </div>
-              <button class="btn btn-success">Submit</button>
-            </form>
-        </div>
+  <div class="col-6 offset-3 mb-3">
+    <div class="card">
+      <img
+        src="https://images.unsplash.com/photo-1731569348001-e49c36947289?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+        class="card-img-top" alt="">
+      <div class="card-body">
+        <h5 class="card-title">
+          <%= campground.title %>
+        </h5>
+        <p class="card-text">
+          <%= campground.description %>
+        </p>
+      </div>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item text-muted">
+          <%= campground.location %>
+        </li>
+        <li class="list-group-item">$<%= campground.price %>/night</li>
+      </ul>
+      <div class="card-body">
+        <a class="card-link btn btn-info" href="/campgrounds/<%= campground._id %>/edit">Edit the Camp</a>
+        <form class="d-inline" action="/campgrounds/<%= campground._id %>?_method=DELETE" method="post">
+          <button class="btn btn-danger">Delete</button>
+        </form>
+      </div>
     </div>
+    <div class="card-footer text-body-secondary">
+      2 days ago
+      <a class="btn btn-success" href="/campgrounds">All Campgrounds</a>
+    </div>
+    <h2>Leave a Review</h2>
+    <form action="/campgrounds/<%=campground._id%>/reviews" method="POST" class="mb-3">
+      <div class="mb-3">
+        <label class="form-label" for="rating">Rating</label>
+        <input class="form-range" type="range" min="1" max="5" name="review[rating]" id="rating">
+      </div>
+      <div class="mb-3">
+        <label class="form-label" for="body">Review</label>
+        <textarea class="form-control" name="review[body]" id="body" cols="30" rows="3"></textarea>
+      </div>
+      <button class="btn btn-success">Submit</button>
+    </form>
+  </div>
 </div>
+
+
+
+
+
+
+
+
+<!-- <% layout('./layouts/boilerplate') -%>
+
+
+  <div class="row">
+    <div class="col-6 offset-3 mb-3">
+      <div class="card">
+        <img
+          src="https://images.unsplash.com/photo-1731569348001-e49c36947289?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+          class="card-img-top" alt="">
+        <div class="card-body">
+          <h5 class="card-title">
+            <%= campground.title %>
+          </h5>
+          <p class="card-text">
+            <%= campground.description %>
+          </p>
+        </div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item text-muted">
+            <%= campground.location %>
+          </li>
+          <li class="list-group-item">$<%= campground.price %>/night</li>
+        </ul>
+        <div class="card-body">
+          <a class="card-link btn btn-info" href="/campgrounds/<%= campground._id %>/edit">Edit the Camp</a>
+          <form class="d-inline" action="/campgrounds/<%= campground._id %>?_method=DELETE" method="post">
+            <button class="btn btn-danger">Delete</button>
+        </div>
+      </div>
+      <div class="card-footer text-body-secondary">
+        2 days ago
+        <a class="btn btn-success" href="/campgrounds">All Campgrounds</a>
+      </div>
+      <h2>Leave a Review</h2>
+    <form action="/campgrounds/<%=campground._id%>/reviews" method="POST" class="mb-3">
+        <div class="mb-3">
+          <label class="form-label" for="rating">Rating</label>
+          <input class="form-range" type="range" min="1" max="5" name="review[rating]" id="rating">
+        </div>
+        <div class="mb-3">
+          <label class="form-label" for="body">Review</label>
+          <textarea class="form-control" name="review[body]" id="body" cols="30" rows="3"></textarea>
+        </div>
+        <button class="btn btn-success">Submit</button>
+    </form>
+    </div>
+  </div> -->

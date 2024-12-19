@@ -20,6 +20,8 @@ const ExpressError = require("./utils/ExpressError");
 // const Joi = require("joi");
 //Joi validations Schemas( Joi is always used in here so no need to require it separatly)
 const { campgroundSchema } = require("./schema.js");
+//importing the review model here
+const Review = require("./models/review.js");
 
 
 //connection to the database
@@ -110,7 +112,14 @@ app.delete("/campgrounds/:id",CatchAsync( async (req,res) => {
 }))
 
 app.post("/campgrounds/:id/reviews",CatchAsync (async(req,res) => {
-    res.send("YOU MADE IT");
+    const { id } = req.params;
+    const campground = await Campground.findById(id);
+    const review = new Review(req.body.review);
+    campground.reviews.push(review);
+    await review.save();
+    await campground.save();
+    res.redirect(`/campgrounds/${campground._id}`)
+
 }))
 
 // app.get("/makecampground", async (req,res) => {
