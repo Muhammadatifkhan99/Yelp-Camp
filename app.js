@@ -19,7 +19,7 @@ const ExpressError = require("./utils/ExpressError");
 //joi tool used for schema validation on the server side
 // const Joi = require("joi");
 //Joi validations Schemas( Joi is always used in here so no need to require it separatly)
-const { campgroundSchema } = require("./schema.js");
+const { campgroundSchema, reviewSchema } = require("./schema.js");
 //importing the review model here
 const Review = require("./models/review.js");
 
@@ -54,6 +54,16 @@ app.use(methodoverride("_method"));
 
 const validateCampground = (req,res,next) => {
     const { error } = campgroundSchema.validate(req.body);
+    if(error) {
+        const msg = error.details.map(el => el.message).join(",");
+        throw new ExpressError(msg,400);
+    } else {
+        next();
+    }
+}
+
+const validateReview = (req,res,next) => {
+    const {error} = reviewSchema.validate(req.body);
     if(error) {
         const msg = error.details.map(el => el.message).join(",");
         throw new ExpressError(msg,400);
@@ -111,7 +121,7 @@ app.delete("/campgrounds/:id",CatchAsync( async (req,res) => {
     res.redirect("/campgrounds");
 }))
 
-app.post("/campgrounds/:id/reviews",CatchAsync (async(req,res) => {
+app.post("/campgrounds/:id/reviews",validateReview,CatchAsync (async(req,res) => {
     const { id } = req.params;
     const campground = await Campground.findById(id);
     const review = new Review(req.body.review);
