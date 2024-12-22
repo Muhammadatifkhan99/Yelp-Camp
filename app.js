@@ -90,7 +90,8 @@ app.get("/campgrounds/new",  (req,res) => {
 
 app.get("/campgrounds/:id",CatchAsync( async (req,res) => {
     const { id } = req.params;
-    const campground = await Campground.findById(id);
+    const campground = await Campground.findById(id).populate("reviews");
+    // console.log(campground);
     res.render("campgrounds/show", { campground });
 }))
 
