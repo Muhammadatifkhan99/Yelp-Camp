@@ -22,6 +22,37 @@ const ExpressError = require("./utils/ExpressError");
 const { campgroundSchema, reviewSchema } = require("./schema.js");
 //importing the review model here
 const Review = require("./models/review.js");
+const review = require("./models/review.js");
+
+// //connecting to the cloud database
+
+
+// const { MongoClient, ServerApiVersion } = require('mongodb');
+// const uri = "mongodb+srv://atif:atif123@cluster0.arwq7.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+
+// // Create a MongoClient with a MongoClientOptions object to set the Stable API version
+// const client = new MongoClient(uri, {
+//   serverApi: {
+//     version: ServerApiVersion.v1,
+//     strict: true,
+//     deprecationErrors: true,
+//   }
+// });
+
+// async function run() {
+//   try {
+//     // Connect the client to the server	(optional starting in v4.7)
+//     await client.connect();
+//     // Send a ping to confirm a successful connection
+//     await client.db("admin").command({ ping: 1 });
+//     console.log("Pinged your deployment. You successfully connected to MongoDB!");
+//   } finally {
+//     // Ensures that the client will close when you finish/error
+//     await client.close();
+//   }
+// }
+// run().catch(console.dir);
+
 
 
 //connection to the database
@@ -133,6 +164,13 @@ app.post("/campgrounds/:id/reviews",validateReview,CatchAsync (async(req,res) =>
 
 }))
 
+app.delete("/campgrounds/:id/reviews/:reviewId", CatchAsync(async (req,res) => {
+    const { id, reviewId } = req.params;
+    await Campground.findByIdAndUpdate(id, {$pull: {reviews: reviewId}});
+    await Review.findByIdAndDelete(reviewId);
+
+    res.redirect(`/campgrounds/${id}`);
+}))
 // app.get("/makecampground", async (req,res) => {
 //     const camp = new Campground({title: "My Backyard", description: "Cheap camping and heavy security is provided"});
 //     await camp.save();
