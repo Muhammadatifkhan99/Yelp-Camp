@@ -23,36 +23,8 @@ const { campgroundSchema, reviewSchema } = require("./schema.js");
 //importing the review model here
 const Review = require("./models/review.js");
 const review = require("./models/review.js");
-
-// //connecting to the cloud database
-
-
-// const { MongoClient, ServerApiVersion } = require('mongodb');
-// const uri = "mongodb+srv://atif:password@cluster0.arwq7.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
-
-// // Create a MongoClient with a MongoClientOptions object to set the Stable API version
-// const client = new MongoClient(uri, {
-//   serverApi: {
-//     version: ServerApiVersion.v1,
-//     strict: true,
-//     deprecationErrors: true,
-//   }
-// });
-
-// async function run() {
-//   try {
-//     // Connect the client to the server	(optional starting in v4.7)
-//     await client.connect();
-//     // Send a ping to confirm a successful connection
-//     await client.db("admin").command({ ping: 1 });
-//     console.log("Pinged your deployment. You successfully connected to MongoDB!");
-//   } finally {
-//     // Ensures that the client will close when you finish/error
-//     await client.close();
-//   }
-// }
-// run().catch(console.dir);
-
+//requiring the campgrounds.js file for the router
+const campgrounds = require("./routes/campgrounds.js");
 
 
 //connection to the database
@@ -83,15 +55,6 @@ app.use(express.json());
 //use the method override
 app.use(methodoverride("_method"));
 
-const validateCampground = (req,res,next) => {
-    const { error } = campgroundSchema.validate(req.body);
-    if(error) {
-        const msg = error.details.map(el => el.message).join(",");
-        throw new ExpressError(msg,400);
-    } else {
-        next();
-    }
-}
 
 const validateReview = (req,res,next) => {
     const {error} = reviewSchema.validate(req.body);
@@ -103,55 +66,13 @@ const validateReview = (req,res,next) => {
     }
 }
 
+app.use("/campgrounds",campgrounds);
+
 app.get("/", (req,res) => {
     res.render("home");
 })
 
-//route to display all the campgrounds...
-//get route for getting data...
-app.get("/campgrounds", CatchAsync( async (req,res) => {
-    const campgrounds = await Campground.find({});
-    res.render("campgrounds/index", {campgrounds});
-}))
-//creating a new camp
-//order does matters here...it can not find the campground with the id of new 
-app.get("/campgrounds/new",  (req,res) => {
-    res.render("campgrounds/new");
-})
 
-app.get("/campgrounds/:id",CatchAsync( async (req,res) => {
-    const { id } = req.params;
-    const campground = await Campground.findById(id).populate("reviews");
-    // console.log(campground);
-    res.render("campgrounds/show", { campground });
-}))
-
-app.get("/campgrounds/:id/edit", CatchAsync( async (req,res) => {
-    const { id } = req.params;
-    const editcampground = await Campground.findById(id);
-    res.render("campgrounds/edit", { editcampground });
-}))
-
-//post requests
-app.post("/campgrounds",validateCampground,CatchAsync (async (req,res) => {
-    // if(!req.body.campground) throw new ExpressError("Invalid Campground Data",400);
-    const campground = new Campground(req.body.campground);
-    await campground.save();
-    res.redirect(`campgrounds/${campground._id}`);
-}));
-
-//put requests
-app.put("/campgrounds/:id",validateCampground,CatchAsync( async (req,res) => {
-    const { id } = req.params;
-    const campground = await Campground.findByIdAndUpdate(id,{...req.body.editcampground });
-    res.redirect(`/campgrounds/${campground._id}`);
-}))
-
-app.delete("/campgrounds/:id",CatchAsync( async (req,res) => {
-    const { id } = req.params;
-    await Campground.findByIdAndDelete(id);
-    res.redirect("/campgrounds");
-}))
 
 app.post("/campgrounds/:id/reviews",validateReview,CatchAsync (async(req,res) => {
     const { id } = req.params;
