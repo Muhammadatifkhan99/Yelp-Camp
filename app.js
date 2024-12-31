@@ -12,8 +12,6 @@ const methodoverride = require("method-override");
 const Campground = require("./models/campground");
 //using ejs-mate to add some more functionality to ejs
 const ejsMate = require("ejs-mate");
-//requiring the CatchAsync Wrapper class/function
-const CatchAsync = require("./utils/CatchAsync");
 //requiring the expresserror class
 const ExpressError = require("./utils/ExpressError");
 //joi tool used for schema validation on the server side
@@ -22,9 +20,11 @@ const ExpressError = require("./utils/ExpressError");
 const { campgroundSchema, reviewSchema } = require("./schema.js");
 //importing the review model here
 const Review = require("./models/review.js");
-const review = require("./models/review.js");
 //requiring the campgrounds.js file for the router
 const campgrounds = require("./routes/campgrounds.js");
+//reviews.js file for the review routes
+const reviews = require("./routes/reviews.js");
+
 
 
 //connection to the database
@@ -56,42 +56,14 @@ app.use(express.json());
 app.use(methodoverride("_method"));
 
 
-const validateReview = (req,res,next) => {
-    const {error} = reviewSchema.validate(req.body);
-    if(error) {
-        const msg = error.details.map(el => el.message).join(",");
-        throw new ExpressError(msg,400);
-    } else {
-        next();
-    }
-}
 
 app.use("/campgrounds",campgrounds);
+app.use("/campgrounds/:id/reviews", reviews);
 
 app.get("/", (req,res) => {
     res.render("home");
 })
 
-
-
-app.post("/campgrounds/:id/reviews",validateReview,CatchAsync (async(req,res) => {
-    const { id } = req.params;
-    const campground = await Campground.findById(id);
-    const review = new Review(req.body.review);
-    campground.reviews.push(review);
-    await review.save();
-    await campground.save();
-    res.redirect(`/campgrounds/${campground._id}`)
-
-}))
-
-app.delete("/campgrounds/:id/reviews/:reviewId", CatchAsync(async (req,res) => {
-    const { id, reviewId } = req.params;
-    await Campground.findByIdAndUpdate(id, {$pull: {reviews: reviewId}});
-    await Review.findByIdAndDelete(reviewId);
-
-    res.redirect(`/campgrounds/${id}`);
-}))
 // app.get("/makecampground", async (req,res) => {
 //     const camp = new Campground({title: "My Backyard", description: "Cheap camping and heavy security is provided"});
 //     await camp.save();
