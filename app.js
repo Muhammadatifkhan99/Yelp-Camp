@@ -12,6 +12,8 @@ const methodoverride = require("method-override");
 const Campground = require("./models/campground");
 //using ejs-mate to add some more functionality to ejs
 const ejsMate = require("ejs-mate");
+//the session module for flash messages
+const session = require("express-session");
 //requiring the expresserror class
 const ExpressError = require("./utils/ExpressError");
 //joi tool used for schema validation on the server side
@@ -53,6 +55,18 @@ app.use(express.json());
 //use the method override
 app.use(methodoverride("_method"));
 app.use(express.static(path.join(__dirname, "public")));
+
+//sessions
+const sessionConfig = {
+    secret: "thisshouldbeabettersecret!",
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+       expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
+       maxAge: 1000 * 60 * 60 * 24 * 7
+    }
+};
+app.use(session(sessionConfig));
 
 
 

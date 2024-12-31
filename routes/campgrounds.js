@@ -41,7 +41,7 @@ router.get("/:id",CatchAsync( async (req,res) => {
 
 router.get("/:id/edit", CatchAsync( async (req,res) => {
     const { id } = req.params;
-    console.log(req.params);
+    // console.log(req.params);
     const editcampground = await Campground.findById(id);
     res.render("campgrounds/edit", { editcampground });
 }))
@@ -57,8 +57,8 @@ router.post("/",validateCampground,CatchAsync (async (req,res) => {
 //put requests
 router.put("/:id",validateCampground,CatchAsync( async (req,res) => {
     const { id } = req.params;
-    console.log(req.params);
-    const campground = await Campground.findByIdAndUpdate(id,{...req.body.editcampground });
+    // console.log(req.params);
+    const campground = await Campground.findByIdAndUpdate(id,{...req.body.campground });
     res.redirect(`/campgrounds/${campground._id}`);
 }))
 
