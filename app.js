@@ -18,8 +18,6 @@ const ExpressError = require("./utils/ExpressError");
 // const Joi = require("joi");
 //Joi validations Schemas( Joi is always used in here so no need to require it separatly)
 const { campgroundSchema, reviewSchema } = require("./schema.js");
-//importing the review model here
-const Review = require("./models/review.js");
 //requiring the campgrounds.js file for the router
 const campgrounds = require("./routes/campgrounds.js");
 //reviews.js file for the review routes

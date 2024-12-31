@@ -20,8 +20,6 @@ const validateCampground = (req,res,next) => {
         next();
     }
 }
-
-
 //route to display all the campgrounds...
 //get route for getting data...
 router.get("/", CatchAsync( async (req,res) => {
@@ -43,6 +41,7 @@ router.get("/:id",CatchAsync( async (req,res) => {
 
 router.get("/:id/edit", CatchAsync( async (req,res) => {
     const { id } = req.params;
+    console.log(req.params);
     const editcampground = await Campground.findById(id);
     res.render("campgrounds/edit", { editcampground });
 }))
@@ -58,6 +57,7 @@ router.post("/",validateCampground,CatchAsync (async (req,res) => {
 //put requests
 router.put("/:id",validateCampground,CatchAsync( async (req,res) => {
     const { id } = req.params;
+    console.log(req.params);
     const campground = await Campground.findByIdAndUpdate(id,{...req.body.editcampground });
     res.redirect(`/campgrounds/${campground._id}`);
 }))
@@ -70,4 +70,3 @@ router.delete("/:id",CatchAsync( async (req,res) => {
 
 
 module.exports = router;
-
