@@ -17,10 +17,6 @@ const Campground = require("../models/campground");
 
 
 
-
-
-
-
 const validateReview = (req,res,next) => {
     const {error} = reviewSchema.validate(req.body);
     if(error) {
@@ -30,7 +26,6 @@ const validateReview = (req,res,next) => {
         next();
     }
 }
-
 
 
 router.post("/",validateReview,CatchAsync (async(req,res) => {

@@ -54,6 +54,7 @@ app.use(express.urlencoded({extended:true}));
 app.use(express.json());
 //use the method override
 app.use(methodoverride("_method"));
+app.use(express.static(path.join(__dirname, "public")));
 
 
 
