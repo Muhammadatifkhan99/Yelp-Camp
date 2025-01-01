@@ -14,6 +14,8 @@ const Campground = require("./models/campground");
 const ejsMate = require("ejs-mate");
 //the session module for flash messages
 const session = require("express-session");
+//flashing messages in to the camp
+const flash = require("connect-flash");
 //requiring the expresserror class
 const ExpressError = require("./utils/ExpressError");
 //joi tool used for schema validation on the server side
@@ -66,7 +68,15 @@ const sessionConfig = {
        maxAge: 1000 * 60 * 60 * 24 * 7
     }
 };
+
 app.use(session(sessionConfig));
+app.use(flash());
+
+
+app.use((req,res,next) => {
+    res.locals.success = req.flash("success");
+    next();
+})
 
 
 
