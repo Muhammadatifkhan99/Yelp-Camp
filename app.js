@@ -26,6 +26,11 @@ const { campgroundSchema, reviewSchema } = require("./schema.js");
 const campgrounds = require("./routes/campgrounds.js");
 //reviews.js file for the review routes
 const reviews = require("./routes/reviews.js");
+//using passport for regular authentications
+const passport = require("passport");
+const localStrategy = require("passport-local");
+const User = require("./models/user.js");
+const { getMaxListeners } = require("events");
 
 
 
@@ -72,11 +77,29 @@ const sessionConfig = {
 app.use(session(sessionConfig));
 app.use(flash());
 
+app.use(passport.initialize());
+//make sure passport.session is used before the normal sesssions 
+app.use(passport.session());
+
+passport.use(new localStrategy(User.authenticate())); // authenticate is the static method that has been added to the passportlocalmongoose
+
+//how to serialize user--->how to store it in the session
+passport.serializeUser(User.serializeUser());
+//how to unstore it in the session
+passport.deserializeUser(User.deserializeUser());
+
+
 
 app.use((req,res,next) => {
     res.locals.success = req.flash("success");
     res.locals.error  = req.flash("error");
     next();
+})
+
+app.get("/makeUser",async (req,res) => {
+    const user = new User ({email: "atifff@gmail.com",username: "colt"});
+    const newUser = await User.register(user, "chicken");
+    res.send(newUser);
 })
 
 
