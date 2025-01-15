@@ -22,10 +22,20 @@ const ExpressError = require("./utils/ExpressError");
 // const Joi = require("joi");
 //Joi validations Schemas( Joi is always used in here so no need to require it separatly)
 const { campgroundSchema, reviewSchema } = require("./schema.js");
+
+
+
+
 //requiring the campgrounds.js file for the router
-const campgrounds = require("./routes/campgrounds.js");
+const campgroundRoutes = require("./routes/campgrounds.js");
 //reviews.js file for the review routes
-const reviews = require("./routes/reviews.js");
+const reviewRoutes = require("./routes/reviews.js");
+//users routes
+const userRoutes = require("./routes/user.js");
+
+
+
+
 //using passport for regular authentications
 const passport = require("passport");
 const localStrategy = require("passport-local");
@@ -96,16 +106,16 @@ app.use((req,res,next) => {
     next();
 })
 
-app.get("/makeUser",async (req,res) => {
-    const user = new User ({email: "atifff@gmail.com",username: "colt"});
-    const newUser = await User.register(user, "chicken");
-    res.send(newUser);
-})
+// app.get("/makeUser",async (req,res) => {
+//     const user = new User ({email: "atifff@gmail.com",username: "colt"});
+//     const newUser = await User.register(user, "chicken");
+//     res.send(newUser);
+// })
 
 
-
-app.use("/campgrounds",campgrounds);
-app.use("/campgrounds/:id/reviews", reviews);
+app.use("/",userRoutes);
+app.use("/campgrounds",campgroundRoutes);
+app.use("/campgrounds/:id/reviews", reviewRoutes);
 
 app.get("/", (req,res) => {
     res.render("home");
