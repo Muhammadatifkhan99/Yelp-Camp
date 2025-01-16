@@ -10,6 +10,8 @@ const { campgroundSchema } = require("../schema.js");
 
 const Campground = require("../models/campground");
 
+const { isLoggedIn } = require("../middleware.js");
+
 
 const validateCampground = (req,res,next) => {
     const { error } = campgroundSchema.validate(req.body);
@@ -28,7 +30,11 @@ router.get("/", CatchAsync( async (req,res) => {
 }))
 //creating a new camp
 //order does matters here...it can not find the campground with the id of new 
-router.get("/new",  (req,res) => {
+router.get("/new",isLoggedIn, (req,res) => {
+    // if(!req.isAuthenticated()){
+    //     req.flash("error","you must sign in");
+    //     return res.redirect("/login");
+    // }
     res.render("campgrounds/new");
 })
 
@@ -43,7 +49,7 @@ router.get("/:id",CatchAsync( async (req,res) => {
     res.render("campgrounds/show", { campground });
 }))
 
-router.get("/:id/edit", CatchAsync( async (req,res) => {
+router.get("/:id/edit",isLoggedIn, CatchAsync( async (req,res) => {
     const { id } = req.params;
     // console.log(req.params);
     const editcampground = await Campground.findById(id);
@@ -55,7 +61,7 @@ router.get("/:id/edit", CatchAsync( async (req,res) => {
 }))
 
 //post requests
-router.post("/",validateCampground,CatchAsync (async (req,res) => {
+router.post("/",validateCampground,isLoggedIn,CatchAsync (async (req,res) => {
     // if(!req.body.campground) throw new ExpressError("Invalid Campground Data",400);
     const campground = new Campground(req.body.campground);
     await campground.save();
