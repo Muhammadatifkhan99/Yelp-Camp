@@ -3,6 +3,7 @@ const router = express.Router();
 const User = require("../models/user");
 const catchAsync = require("../utils/CatchAsync");
 const passport  = require("passport");
+const { isLoggedIn } = require("../middleware.js");
 
 router.get("/register",(req,res) => {
     res.render("users/register");
@@ -25,15 +26,18 @@ try{
 }
     // res.send(req.body);
 }))
-
+let redirectUrl = 0;
 router.get("/login",(req,res) => {
+    // console.log("Return to URL in get route for login: ",req.session.returnTo);
+    redirectUrl = req.session.returnTo;
     res.render("users/login");
 })
 
-router.post("/login",passport.authenticate("local",{failureFlash: true, failureRedirect:"/login"}), (req,res) => {
+router.post("/login",passport.authenticate("local",{failureFlash: true, failureRedirect:"/login"}),(req,res) => {
     req.flash("success", "Welcome back");
-    const redirectUrl = req.session.returnTo || "/campgrounds";
-    delete req.session.returnTo;
+    // console.log("Return to URL in the login post route: ",req.session.returnTo);
+    // const redirectUrl = req.session.returnTo || "/campgrounds";
+    // delete req.session.returnTo;
     res.redirect(redirectUrl);
 })
 
