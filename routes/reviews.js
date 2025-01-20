@@ -8,7 +8,7 @@ const router = express.Router({mergeParams: true});
 //requiring the CatchAsync Wrapper class/function
 const CatchAsync = require("../utils/CatchAsync");
 //the middleware file 
-const { validateReview } = require("../middleware.js")
+const { validateReview, isLoggedIn } = require("../middleware.js")
 
 // const { reviewSchema } = require("../schema.js");
 
@@ -16,10 +16,11 @@ const Review = require("../models/review.js");
 const Campground = require("../models/campground");
 
 
-router.post("/",validateReview,CatchAsync (async(req,res) => {
+router.post("/",isLoggedIn,validateReview,CatchAsync (async(req,res) => {
     const { id } = req.params;
     const campground = await Campground.findById(id);
     const review = new Review(req.body.review);
+    review.author = req.user._id;
     campground.reviews.push(review);
     await review.save();
     await campground.save();
