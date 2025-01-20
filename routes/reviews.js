@@ -7,25 +7,13 @@ const router = express.Router({mergeParams: true});
 
 //requiring the CatchAsync Wrapper class/function
 const CatchAsync = require("../utils/CatchAsync");
-//requiring the expresserror class
-const ExpressError = require("../utils/ExpressError");
+//the middleware file 
+const { validateReview } = require("../middleware.js")
 
-const { reviewSchema } = require("../schema.js");
+// const { reviewSchema } = require("../schema.js");
 
 const Review = require("../models/review.js");
 const Campground = require("../models/campground");
-
-
-
-const validateReview = (req,res,next) => {
-    const {error} = reviewSchema.validate(req.body);
-    if(error) {
-        const msg = error.details.map(el => el.message).join(",");
-        throw new ExpressError(msg,400);
-    } else {
-        next();
-    }
-}
 
 
 router.post("/",validateReview,CatchAsync (async(req,res) => {

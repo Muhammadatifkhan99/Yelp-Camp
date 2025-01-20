@@ -1,3 +1,12 @@
+//requiring the expresserror class
+const ExpressError = require("./utils/ExpressError");
+//the campground schema
+const { campgroundSchema } = require("./schema.js");
+//the file for review schema from the schema 
+const { reviewSchema } = require("./schema.js")
+
+
+
 module.exports.isLoggedIn = (req,res,next) => {
     // console.log("REQ.USER...",req.user);
     if(!req.isAuthenticated()){
@@ -7,4 +16,34 @@ module.exports.isLoggedIn = (req,res,next) => {
         return res.redirect("/login");
     }
     next();
+}
+
+module.exports.validateCampground = (req,res,next) => {
+    const { error } = campgroundSchema.validate(req.body);
+    if(error) {
+        const msg = error.details.map(el => el.message).join(",");
+        throw new ExpressError(msg,400);
+    } else {
+        next();
+    }
+}
+
+module.exports.isAuthor = async (req,res,next) => {
+    const { id } = req.params;
+    const campground = await Campground.findById(id);
+    if(!campground.author.equals(req.user._id)){
+        req.flash("error","You do not have permissions to that");
+        return res.redirect(`/campgrounds/${id}`);
+    }
+    next();
+}
+
+module.exports.validateReview = (req,res,next) => {
+    const {error} = reviewSchema.validate(req.body);
+    if(error) {
+        const msg = error.details.map(el => el.message).join(",");
+        throw new ExpressError(msg,400);
+    } else {
+        next();
+    }
 }
