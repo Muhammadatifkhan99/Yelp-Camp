@@ -6,6 +6,7 @@ const { campgroundSchema } = require("./schema.js");
 const { reviewSchema } = require("./schema.js")
 
 const Review = require("./models/review.js")
+const Campground = require("./models/campground.js")
 
 
 
@@ -41,9 +42,6 @@ module.exports.isReviewAuthor = async (req,res,next) => {
     }
     next();
 }
-
-
-
 
 
 module.exports.isAuthor = async (req,res,next) => {
