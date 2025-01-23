@@ -13,13 +13,21 @@ const { isLoggedIn, isAuthor, validateCampground } = require("../middleware.js")
 const campground = require("../models/campground");
 
 
+//using multer middleware
+const multer  = require("multer")
+const upload = multer({ dest: "uploads/" })
+
+
 
 //route to display all the campgrounds...
 //get route for getting data...
 router.route("/")
     .get(CatchAsync(campgrounds.index))
     //post requests
-    .post(validateCampground,isLoggedIn,CatchAsync(campgrounds.createCampground))
+    // .post(validateCampground,isLoggedIn,CatchAsync(campgrounds.createCampground))
+    .post(upload.single("image"),(req,res) => {
+        res.send(req.body,req.file);
+    })
 //creating a new camp
 //order does matters here...it can not find the campground with the id of new 
 router.get("/new",isLoggedIn, campgrounds.renderNewForm);
