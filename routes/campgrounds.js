@@ -12,10 +12,14 @@ const Campground = require("../models/campground");
 const { isLoggedIn, isAuthor, validateCampground } = require("../middleware.js");
 const campground = require("../models/campground");
 
+//requiring the cloudinary files
+const { storage } = require("../cloudinary/index.js");
+//no index file is specified because node automatically looks for an index file
+
 
 //using multer middleware
 const multer  = require("multer")
-const upload = multer({ dest: "uploads/" })
+const upload = multer({ storage })
 
 
 
@@ -24,9 +28,10 @@ const upload = multer({ dest: "uploads/" })
 router.route("/")
     .get(CatchAsync(campgrounds.index))
     //post requests
-    // .post(validateCampground,isLoggedIn,CatchAsync(campgrounds.createCampground))
-    .post(upload.single("image"),(req,res) => {
-        res.send(req.body,req.file);
+    //.post(validateCampground,isLoggedIn,CatchAsync(campgrounds.createCampground))
+    .post(upload.array("image"),(req,res) => {
+        console.log(req.body,req.files);
+        res.send("IT WORKED");
     })
 //creating a new camp
 //order does matters here...it can not find the campground with the id of new 

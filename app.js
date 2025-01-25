@@ -2,9 +2,6 @@ if(process.env.NODE_ENV !== "production"){
     require("dotenv").config();
 }
 
-console.log(process.env.SECRET);
-console.log(process.env.API_KEY);
-
 const express = require("express");
 //using mongoose to interact with MONGODB
 const mongoose = require("mongoose");
