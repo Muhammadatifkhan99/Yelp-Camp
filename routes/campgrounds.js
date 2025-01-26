@@ -27,8 +27,9 @@ const upload = multer({ storage })
 //get route for getting data...
 router.route("/")
     .get(CatchAsync(campgrounds.index))
-    //post requests
-    .post(isLoggedIn,upload.array("image"),validateCampground,CatchAsync(campgrounds.createCampground))
+    .post(isLoggedIn,upload.array("image"),validateCampground,CatchAsync(campgrounds.createCampground));
+
+    
 //creating a new camp
 //order does matters here...it can not find the campground with the id of new 
 router.get("/new",isLoggedIn, campgrounds.renderNewForm);
