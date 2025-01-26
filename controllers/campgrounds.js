@@ -67,6 +67,10 @@ module.exports.updateCampground = async (req,res) => {
     const { id } = req.params;
     // console.log(req.params);
     const campground = await Campground.findByIdAndUpdate(id,{...req.body.campground });
+    //we need not to push an array of images to the array of images we already have, spread it before adding it into array
+    const img = req.files.map(f => ({url: f.path, filename: f.filename}));
+    campground.images.push(...img);
+    await campground.save();
     req.flash("success", "Successfully updated campground");
     res.redirect(`/campgrounds/${campground._id}`);
 }

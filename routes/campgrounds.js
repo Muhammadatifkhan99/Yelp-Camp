@@ -29,13 +29,13 @@ router.route("/")
     .get(CatchAsync(campgrounds.index))
     .post(isLoggedIn,upload.array("image"),validateCampground,CatchAsync(campgrounds.createCampground));
 
-    
+
 //creating a new camp
 //order does matters here...it can not find the campground with the id of new 
 router.get("/new",isLoggedIn, campgrounds.renderNewForm);
 
 router.route("/:id")
-    .put(validateCampground,isAuthor,CatchAsync(campgrounds.updateCampground))
+    .put(isLoggedIn,isAuthor,upload.array("image"),validateCampground,CatchAsync(campgrounds.updateCampground))
     .delete(isLoggedIn,isAuthor,CatchAsync(campgrounds.deleteCampground))
     .get(CatchAsync(campgrounds.showCampground));
 
